@@ -2,6 +2,8 @@
 
 This project aims to create a web-based application for playing the popular card game "Loba".
 
+This is pretty much entirely a vibe-coding project, using cursor and Gemini 2.5 Pro.
+
 ## Project Goals
 
 - Implement the complete game logic for "Loba de Menos" in JavaScript.
