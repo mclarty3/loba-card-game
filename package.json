@@ -4,6 +4,7 @@
     "description": "A web-based version of the Loba card game.",
     "main": "src/game-logic/index.js",
     "scripts": {
+        "start": "serve .",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
@@ -13,5 +14,8 @@
         "rummy"
     ],
     "author": "",
-    "license": "ISC"
+    "license": "ISC",
+    "devDependencies": {
+        "serve": "^14.0.0"
+    }
 }

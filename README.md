@@ -13,6 +13,40 @@ This is pretty much entirely a vibe-coding project, using cursor and Gemini 2.5 
     - **For Puntos:** The traditional scoring method where the player with the lowest score at the end of the game wins.
     - **For Loba:** A mode where the player who wins the most rounds is declared the winner.
 
+## Running the Game Locally
+Add comment
+More actions
+
+This project uses `serve` to run a local development server.
+
+1.  **Clone the repository:**
+
+
+    ```bash
+    git clone <repository-url>
+
+    cd loba-cardgame
+    ```
+
+2.  **Install dependencies:**
+
+
+    ```bash
+    npm install
+    ```
+
+3.  **Start the server:**
+
+
+    ```bash
+    npm start
+    ```
+4.  **Open the game:**
+
+
+    Open your web browser and navigate to `http://localhost:3000/public`.
+
+
 ## Game Rules: Loba de Menos
 
 ### Objective
