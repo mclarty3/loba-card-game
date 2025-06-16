@@ -2,10 +2,46 @@
 import { createPlayerHandElement } from './PlayerHand.js';
 import { createCardElement } from './Card.js';
 import { isPierna, isEscalera } from '../game-logic/melds.js';
+import { settings, setLanguage } from '../settings.js';
 
 export function createGameBoardElement(gameState, handlers) {
+    const lang = settings.language;
     const gameBoardElement = document.createElement('div');
     gameBoardElement.id = 'game-board-inner';
+
+    // --- Header ---
+    const headerElement = document.createElement('div');
+    headerElement.classList.add('game-header');
+
+    // Language Selector
+    const langSelectorContainer = document.createElement('div');
+    langSelectorContainer.classList.add('language-selector');
+
+    const langLabel = document.createElement('label');
+    langLabel.for = 'language-select';
+    langLabel.textContent = lang.language_label + ':';
+    langSelectorContainer.appendChild(langLabel);
+
+    const langSelect = document.createElement('select');
+    langSelect.id = 'language-select';
+
+    for (const [code, langData] of Object.entries(settings.availableLanguages)) {
+        const option = document.createElement('option');
+        option.value = code;
+        option.textContent = langData.name;
+        if (code === settings.currentLanguageCode) {
+            option.selected = true;
+        }
+        langSelect.appendChild(option);
+    }
+
+    langSelect.addEventListener('change', (e) => {
+        setLanguage(e.target.value);
+    });
+
+    langSelectorContainer.appendChild(langSelect);
+    headerElement.appendChild(langSelectorContainer);
+    gameBoardElement.appendChild(headerElement);
 
     // --- Status Bar ---
     const statusDiv = document.createElement('div');
@@ -18,13 +54,13 @@ export function createGameBoardElement(gameState, handlers) {
         } else { // 'loba' mode
             winner = gameState.players.find(p => p.roundsWon >= gameState.gameSettings.maxRounds);
         }
-        statusDiv.textContent = `Game Over! Player ${winner.id} wins the game!`;
+        statusDiv.textContent = lang.game_over(winner.id);
     } else if (gameState.turnPhase === 'round-over') {
         const winner = gameState.players.find(p => p.hand.length === 0);
-        statusDiv.textContent = `Round Over! Player ${winner.id} won.`;
+        statusDiv.textContent = lang.round_over(winner.id);
     } else {
-        const phaseText = gameState.turnPhase === 'draw' ? 'Draw a card' : 'Meld or discard';
-        statusDiv.textContent = `Player ${gameState.currentPlayerId}'s Turn: ${phaseText}`;
+        const phaseText = gameState.turnPhase === 'draw' ? lang.draw_phase : lang.meld_phase;
+        statusDiv.textContent = lang.player_turn(gameState.currentPlayerId, phaseText);
     }
 
     gameBoardElement.appendChild(statusDiv);
@@ -86,13 +122,13 @@ export function createGameBoardElement(gameState, handlers) {
 
     if (gameState.turnPhase === 'game-over') {
         const newGameButton = document.createElement('button');
-        newGameButton.textContent = 'Start New Game';
+        newGameButton.textContent = lang.new_game;
         newGameButton.classList.add('action-button');
         newGameButton.addEventListener('click', handlers.onNewGame);
         centralArea.appendChild(newGameButton);
     } else if (gameState.turnPhase === 'round-over') {
         const nextRoundButton = document.createElement('button');
-        nextRoundButton.textContent = 'Start Next Round';
+        nextRoundButton.textContent = lang.next_round;
         nextRoundButton.classList.add('action-button');
         nextRoundButton.addEventListener('click', handlers.onNextRound);
         centralArea.appendChild(nextRoundButton);
@@ -101,14 +137,14 @@ export function createGameBoardElement(gameState, handlers) {
         const isMeldPhase = gameState.turnPhase !== 'draw';
 
         const meldButton = document.createElement('button');
-        meldButton.textContent = 'Meld Selected Cards';
+        meldButton.textContent = lang.meld;
         meldButton.classList.add('action-button');
         meldButton.addEventListener('click', handlers.onMeld);
         meldButton.disabled = !isMeldPhase || !(isPierna(selectedCards) || isEscalera(selectedCards));
         centralArea.appendChild(meldButton);
 
         const discardButton = document.createElement('button');
-        discardButton.textContent = 'Discard Selected Card';
+        discardButton.textContent = lang.discard;
         discardButton.classList.add('action-button');
         discardButton.addEventListener('click', handlers.onDiscard);
         discardButton.disabled = !isMeldPhase || selectedCards.length !== 1;
@@ -121,7 +157,7 @@ export function createGameBoardElement(gameState, handlers) {
         if (isDrawPhase) {
             deckPile.classList.add('active-pile');
         }
-        deckPile.textContent = 'Deck';
+        deckPile.textContent = lang.deck;
         deckPile.addEventListener('click', handlers.onDrawFromDeck);
         centralArea.appendChild(deckPile);
 
@@ -143,7 +179,7 @@ export function createGameBoardElement(gameState, handlers) {
             discardPile.innerHTML = '';
             discardPile.appendChild(cardElement);
         } else {
-            discardPile.textContent = 'Discard';
+            discardPile.textContent = lang.discard_pile;
         }
         centralArea.appendChild(discardPile);
     }
@@ -155,21 +191,21 @@ export function createGameBoardElement(gameState, handlers) {
     debugArea.classList.add('debug-area');
 
     const debugTitle = document.createElement('h4');
-    debugTitle.textContent = 'Debug Controls:';
+    debugTitle.textContent = lang.debug_controls;
     debugArea.appendChild(debugTitle);
 
     const rankInput = document.createElement('input');
     rankInput.id = 'rank-debug-input';
-    rankInput.placeholder = 'Rank (e.g., A, 7)';
+    rankInput.placeholder = lang.debug_rank_placeholder;
     debugArea.appendChild(rankInput);
 
     const suitInput = document.createElement('input');
     suitInput.id = 'suit-debug-input';
-    suitInput.placeholder = 'Suit (hearts)';
+    suitInput.placeholder = lang.debug_suit_placeholder;
     debugArea.appendChild(suitInput);
 
     const setCardButton = document.createElement('button');
-    setCardButton.textContent = 'Set Next Card';
+    setCardButton.textContent = lang.debug_set_card;
     setCardButton.addEventListener('click', () => {
         const rank = document.getElementById('rank-debug-input').value.charAt(0).toUpperCase() + document.getElementById('rank-debug-input').value.slice(1).toLowerCase();
         const suit = document.getElementById('suit-debug-input').value.toLowerCase();
@@ -179,7 +215,7 @@ export function createGameBoardElement(gameState, handlers) {
 
     if (gameState.forcedNextCard) {
         const forcedCardStatus = document.createElement('p');
-        forcedCardStatus.textContent = `Next draw: ${gameState.forcedNextCard.rank} of ${gameState.forcedNextCard.suit}`;
+        forcedCardStatus.textContent = lang.debug_next_draw(gameState.forcedNextCard.rank, gameState.forcedNextCard.suit);
         debugArea.appendChild(forcedCardStatus);
     }
 

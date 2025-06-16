@@ -1,6 +1,7 @@
 import { createGameBoardElement } from '../components/GameBoard.js';
 import { startGame, startNewRound } from './game.js';
 import { drawFromDeck, drawFromDiscard, meldSelectedCards, layOffCards, discardCard } from './actions.js';
+import { subscribe } from '../settings.js';
 
 // --- Game State ---
 let gameState;
@@ -78,6 +79,9 @@ function initializeApp() {
     gameState.forcedNextCard = null; // For debugging
     renderGame();
 }
+
+// Subscribe the render function to language changes
+subscribe(renderGame);
 
 // Start the application
 initializeApp();
