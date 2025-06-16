@@ -37,6 +37,9 @@ export function createGameBoardElement(gameState, handlers) {
         const isCurrentPlayer = player.id === gameState.currentPlayerId;
         const handler = isCurrentPlayer ? handlers.onCardClick : () => { };
         const playerHandElement = createPlayerHandElement(player, handler, gameState.selectedCards, gameState.gameMode);
+        if (isCurrentPlayer) {
+            playerHandElement.classList.add('active-hand');
+        }
         playersArea.appendChild(playerHandElement);
     });
     gameBoardElement.appendChild(playersArea);
@@ -48,6 +51,26 @@ export function createGameBoardElement(gameState, handlers) {
         const meldContainer = document.createElement('div');
         meldContainer.classList.add('meld-container');
         meldContainer.dataset.meldIndex = index;
+
+        // Check if the selected cards can be laid off on this meld
+        if (gameState.selectedCards.length > 0 && gameState.turnPhase !== 'draw') {
+            if (meld.type === 'escalera') {
+                const potentialNewMeld = [...meld.cards, ...gameState.selectedCards];
+                if (isEscalera(potentialNewMeld)) {
+                    meldContainer.classList.add('active-meld');
+                }
+            } else if (meld.type === 'pierna') {
+                const selected = gameState.selectedCards;
+                // For a pierna lay-off, the card must match the rank and be one of the existing suits.
+                if (selected.length === 1 && selected[0].rank === meld.cards[0].rank) {
+                    const piernaSuits = new Set(meld.cards.map(c => c.suit));
+                    if (piernaSuits.has(selected[0].suit)) {
+                        meldContainer.classList.add('active-meld');
+                    }
+                }
+            }
+        }
+
         meldContainer.addEventListener('click', () => handlers.onLayOff(index));
 
         meld.cards.forEach(card => {
@@ -91,14 +114,27 @@ export function createGameBoardElement(gameState, handlers) {
         discardButton.disabled = !isMeldPhase || selectedCards.length !== 1;
         centralArea.appendChild(discardButton);
 
+        const isDrawPhase = gameState.turnPhase === 'draw';
+
         const deckPile = document.createElement('div');
         deckPile.classList.add('deck-pile', 'card-pile');
+        if (isDrawPhase) {
+            deckPile.classList.add('active-pile');
+        }
         deckPile.textContent = 'Deck';
         deckPile.addEventListener('click', handlers.onDrawFromDeck);
         centralArea.appendChild(deckPile);
 
         const discardPile = document.createElement('div');
         discardPile.classList.add('discard-pile', 'card-pile');
+        if (isDrawPhase && gameState.discardPile.length > 0) {
+            const topDiscard = gameState.discardPile[gameState.discardPile.length - 1];
+            const potentialMeld = [...selectedCards, topDiscard];
+            // Only make it active if the selected cards + top discard form a valid meld
+            if (isPierna(potentialMeld) || isEscalera(potentialMeld)) {
+                discardPile.classList.add('active-pile');
+            }
+        }
         discardPile.addEventListener('click', handlers.onDrawFromDiscard);
 
         if (gameState.discardPile.length > 0) {

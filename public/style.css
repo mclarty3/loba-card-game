@@ -58,11 +58,19 @@ h1 {
     text-align: center;
 }
 
+.active-hand .card:hover {
+    cursor: pointer;
+    border-color: #fdd835;
+    /* Gold border on hover for active player */
+}
+
 .cards-container {
     display: flex;
     gap: 5px;
     flex-wrap: wrap;
     /* Allow cards to wrap if hand is large */
+    font-size: 1.2em;
+    background-color: #1a5944;
 }
 
 .table-area {
@@ -83,6 +91,17 @@ h1 {
     padding: 5px;
     background-color: #1a5944;
     border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
+    /* Reserve space for border */
+}
+
+.active-meld {
+    cursor: pointer;
+    box-shadow: 0 0 15px #00b4d8;
+    border-color: #00b4d8;
+    /* Change color of existing border */
+    transform: scale(1.03);
 }
 
 .central-area {
@@ -103,6 +122,14 @@ h1 {
     align-items: center;
     font-size: 1.2em;
     background-color: #1a5944;
+}
+
+.active-pile {
+    cursor: pointer;
+    border-style: solid;
+    border-color: #ffeb3b;
+    /* Brighter gold for active piles */
+    box-shadow: 0 0 10px #ffeb3b;
 }
 
 /* Card Styles */
