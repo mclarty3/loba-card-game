@@ -130,3 +130,58 @@ export function sortEscalera(cards) {
 
     return sortedCards;
 }
+
+/**
+ * Finds all possible meld combinations (piernas and escaleras) in a given hand.
+ * @param {Array<object>} hand The hand of cards to search for melds.
+ * @returns {object} An object with 'piernas' and 'escaleras' lists.
+ */
+export function findPossibleMelds(hand) {
+    const piernas = [];
+    const escaleras = [];
+
+    // Helper to generate combinations
+    function getCombinations(arr, r) {
+        const result = [];
+        const f = (start, combo) => {
+            if (combo.length === r) {
+                result.push(combo);
+                return;
+            }
+            for (let i = start; i < arr.length; i++) {
+                f(i + 1, [...combo, arr[i]]);
+            }
+        };
+        f(0, []);
+        return result;
+    }
+
+    // Iterate over all possible combination sizes
+    for (let r = 3; r <= hand.length; r++) {
+        const combinations = getCombinations(hand, r);
+        for (const combo of combinations) {
+            if (isPierna(combo)) {
+                piernas.push(combo);
+            } else if (isEscalera(combo)) {
+                escaleras.push(combo);
+            }
+        }
+    }
+
+    // Simple filtering to avoid including sub-melds of larger melds
+    const filterSubsets = (melds) => {
+        return melds.filter(m1 => {
+            const m1_set = new Set(m1);
+            return !melds.some(m2 => {
+                if (m1 === m2) return false;
+                const m2_set = new Set(m2);
+                return [...m1_set].every(card => m2_set.has(card));
+            });
+        });
+    };
+
+    return {
+        piernas: filterSubsets(piernas),
+        escaleras: filterSubsets(escaleras)
+    };
+}

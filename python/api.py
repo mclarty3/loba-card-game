@@ -13,7 +13,7 @@ CORS(app)  # Allow cross-origin requests
 
 # Load the trained model
 model_dir = "./rl_models/"
-model_to_load = "ppo_loba_model_200000_steps.zip" # Choose your best model
+model_to_load = "ppo_loba_final.zip" # Choose your best model
 model_path = os.path.join(model_dir, model_to_load)
 
 try:

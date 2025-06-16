@@ -13,6 +13,11 @@ This is pretty much entirely a vibe-coding project, using cursor and Gemini 2.5 
     - **For Puntos:** The traditional scoring method where the player with the lowest score at the end of the game wins.
     - **For Loba:** A mode where the player who wins the most rounds is declared the winner.
 
+## Known Bug
+
+- If Joker is in middle, it should not be allowed to be moved to outer edge to replace with a new card
+  - E.g: 3 Joker 5 6 =/> 3 4 5 6 Joker (NOT ALLOWED)
+
 ## Running the Game Locally
 Add comment
 More actions

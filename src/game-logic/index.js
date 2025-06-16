@@ -73,8 +73,9 @@ const actionHandlers = {
         }
     },
     onNextRound: () => {
-        // The engine now handles starting a new round.
-        // We just need to trigger the next turn.
+        // Explicitly start a new round.
+        startNewRound(gameState);
+        // Then, execute the first turn of that new round.
         executeTurn();
     },
     onNewGame: () => {
