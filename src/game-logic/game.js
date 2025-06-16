@@ -19,7 +19,8 @@ export function startGame(numPlayers) {
             id: i,
             hand: [],
             score: 0,
-            roundsWon: 0
+            roundsWon: 0,
+            isAI: i === 2 // Player 2 is an AI
         });
     }
 

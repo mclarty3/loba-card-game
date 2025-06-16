@@ -2,9 +2,25 @@ import { createGameBoardElement } from '../components/GameBoard.js';
 import { startGame, startNewRound } from './game.js';
 import { drawFromDeck, drawFromDiscard, meldSelectedCards, layOffCards, discardCard } from './actions.js';
 import { subscribe } from '../settings.js';
+import { runGameTurn } from './engine.js';
 
 // --- Game State ---
 let gameState;
+
+// --- Game Loop ---
+async function executeTurn() {
+    // Run the turn logic, passing the render function for the AI to use
+    await runGameTurn(gameState, renderGame);
+    // The final render after a turn is complete
+    renderGame();
+
+    // If the current player is an AI, and the game is not over, continue the loop
+    const currentPlayer = gameState.players.find(p => p.id === gameState.currentPlayerId);
+    if (currentPlayer && currentPlayer.isAI && gameState.turnPhase !== 'game-over') {
+        // The delay is now inside the AI's turn, so we can call the next turn directly.
+        executeTurn();
+    }
+}
 
 // --- Actions Handlers ---
 const actionHandlers = {
@@ -22,7 +38,8 @@ const actionHandlers = {
     },
     onDiscard: () => {
         discardCard(gameState);
-        renderGame();
+        // After a human discards, the turn should advance.
+        executeTurn();
     },
     onLayOff: (meldIndex) => {
         layOffCards(gameState, meldIndex);
@@ -56,8 +73,9 @@ const actionHandlers = {
         }
     },
     onNextRound: () => {
-        gameState = startNewRound(gameState);
-        renderGame();
+        // The engine now handles starting a new round.
+        // We just need to trigger the next turn.
+        executeTurn();
     },
     onNewGame: () => {
         initializeApp();
@@ -78,6 +96,8 @@ function initializeApp() {
     gameState = startGame(2); // Start a game with 2 players
     gameState.forcedNextCard = null; // For debugging
     renderGame();
+    // Start the first turn
+    executeTurn();
 }
 
 // Subscribe the render function to language changes
