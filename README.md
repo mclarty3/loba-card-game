@@ -19,6 +19,7 @@ This is pretty much entirely a vibe-coding project, using cursor and Gemini 2.5 
   - E.g: 3 Joker 5 6 =/> 3 4 5 6 Joker (NOT ALLOWED)
 - Sometimes AI takes two turns (if player clicks through UI too fast? unsure)
 - AI pretty much always chooses to discard first card, bug in training behavior probably
+  - Should probably never discard jokers?
 
 ## Running the Game Locally
 Add comment
