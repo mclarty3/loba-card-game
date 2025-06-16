@@ -151,6 +151,30 @@ export function layOffCards(gameState, meldIndex) {
 
     // --- Escalera Lay Off ---
     if (meldToAddTo.type === 'escalera') {
+        const cardToLayOff = gameState.selectedCards[0];
+
+        // Handle laying off a Joker specifically
+        if (gameState.selectedCards.length === 1 && cardToLayOff.rank === 'Joker') {
+            const hasJoker = meldToAddTo.cards.some(c => c.rank === 'Joker');
+            if (!hasJoker) {
+                // Valid to add a Joker if one isn't there already
+                meldToAddTo.cards.push(cardToLayOff);
+                meldToAddTo.cards = sortEscalera(meldToAddTo.cards);
+
+                // Remove from hand
+                const cardIndex = currentPlayer.hand.findIndex(c => c.rank === 'Joker');
+                if (cardIndex > -1) currentPlayer.hand.splice(cardIndex, 1);
+
+                gameState.selectedCards = [];
+                console.log("Lay off of Joker to Escalera successful!");
+                if (currentPlayer.hand.length === 0) endRound(gameState, currentPlayer);
+                return;
+            } else {
+                console.log("Invalid lay off. Escalera already has a Joker.");
+                return;
+            }
+        }
+
         const potentialNewMeld = [...meldToAddTo.cards, ...gameState.selectedCards];
         if (isEscalera(potentialNewMeld)) {
             // Replace the old meld with the new, sorted one
