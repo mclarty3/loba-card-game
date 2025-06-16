@@ -1,0 +1,196 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0c3b2e;
+    /* Dark green background */
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#game-container {
+    width: 95%;
+    height: 95%;
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    text-align: center;
+    color: #fdd835;
+    /* Yellowish gold color for the title */
+    margin: 10px 0;
+}
+
+.status-bar {
+    text-align: center;
+    padding: 10px;
+    background-color: #1a5944;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+#game-board-inner {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.players-area {
+    display: flex;
+    justify-content: space-around;
+}
+
+.player-hand {
+    border: 2px solid #fdd835;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #1a5944;
+}
+
+.player-hand h3 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.cards-container {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    /* Allow cards to wrap if hand is large */
+}
+
+.table-area {
+    background-color: #082c21;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 0;
+    min-height: 140px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.meld-container {
+    display: flex;
+    gap: 5px;
+    padding: 5px;
+    background-color: #1a5944;
+    border-radius: 8px;
+}
+
+.central-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.card-pile {
+    width: 80px;
+    height: 120px;
+    border: 2px dashed #fdd835;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    background-color: #1a5944;
+}
+
+/* Card Styles */
+.card {
+    width: 80px;
+    height: 120px;
+    border: 1px solid #000;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #000;
+    position: relative;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    font-size: 1.5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.card.red {
+    color: #d90429;
+}
+
+.card .rank {
+    font-weight: bold;
+    align-self: flex-start;
+}
+
+.card .suit {
+    font-size: 1.8em;
+    align-self: center;
+}
+
+.card.selected {
+    border: 3px solid #00b4d8;
+    transform: scale(1.05);
+}
+
+.action-button {
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    color: #0c3b2e;
+    background-color: #fdd835;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.action-button:hover {
+    background-color: #ffeb3b;
+}
+
+.action-button:disabled {
+    background-color: #9e9e9e;
+    /* Muted gray */
+    color: #616161;
+    /* Darker gray for text */
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.debug-area {
+    background-color: #444;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 8px;
+    border: 1px solid #fdd835;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.debug-area h4 {
+    margin: 0;
+    color: #fdd835;
+}
+
+.debug-area input {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.debug-area p {
+    margin: 0;
+    font-style: italic;
+}
