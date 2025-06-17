@@ -1,7 +1,24 @@
 // Component for displaying a player's hand
 import { createCardElement } from './Card.js';
 import { settings } from '../settings.js';
-import { sortHand } from '../game-logic/utils.js';
+import { sortHand } from '../game-logic/melds.js';
+
+const SUITS_ORDER = ['hearts', 'diams', 'clubs', 'spades', 'joker'];
+
+function getRankValue(rank) {
+    const rankIndex = RANKS.indexOf(rank);
+    if (rankIndex !== -1) {
+        return rankIndex;
+    }
+    if (rank === 'Joker') {
+        return RANKS.length;
+    }
+    return -1;
+}
+
+function getSuitValue(suit) {
+    return SUITS_ORDER.indexOf(suit);
+}
 
 export function createPlayerHandElement(player, onCardClick, selectedCards, gameMode, handlers, gameState) {
     const lang = settings.language;

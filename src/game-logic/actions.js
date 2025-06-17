@@ -1,5 +1,6 @@
-import { isPierna, isEscalera, sortEscalera } from './melds.js';
+import { isPierna, isEscalera, sortEscalera, getRankValue, RANK_VALUES } from './melds.js';
 import { calculateHandScore } from './scoring.js';
+import { RANKS } from './deck.js';
 
 /**
  * Allows the current player to draw a card from the top of the deck.
@@ -158,29 +159,52 @@ export function layOffCards(gameState, meldIndex) {
 
     // --- Escalera Lay Off ---
     if (meldToAddTo.type === 'escalera') {
-        const cardToLayOff = gameState.selectedCards[0];
+        const hasJoker = meldToAddTo.cards.some(c => c.rank === 'Joker');
+        const suit = meldToAddTo.cards.find(c => c.rank !== 'Joker').suit;
 
-        // Handle laying off a Joker specifically
-        if (gameState.selectedCards.length === 1 && cardToLayOff.rank === 'Joker') {
-            const hasJoker = meldToAddTo.cards.some(c => c.rank === 'Joker');
-            if (!hasJoker) {
-                // Valid to add a Joker if one isn't there already
-                meldToAddTo.cards.push(cardToLayOff);
-                meldToAddTo.cards = sortEscalera(meldToAddTo.cards);
-
-                // Remove from hand
-                const cardIndex = currentPlayer.hand.findIndex(c => c.rank === 'Joker');
-                if (cardIndex > -1) currentPlayer.hand.splice(cardIndex, 1);
-
-                gameState.selectedCards = [];
-                console.log("Lay off of Joker to Escalera successful!");
-                if (currentPlayer.hand.length === 0) endRound(gameState, currentPlayer);
+        // If the meld has a joker, we need more specific logic
+        if (hasJoker) {
+            if (gameState.selectedCards.length !== 1) {
+                console.log("Invalid lay off. Select one card.");
                 return;
-            } else {
-                console.log("Invalid lay off. Escalera already has a Joker.");
+            }
+            const cardToLayOff = gameState.selectedCards[0];
+            if (cardToLayOff.rank === 'Joker') {
+                console.log("Invalid move: Cannot lay off a Joker on a meld that already has one.");
+                return;
+            }
+            if (cardToLayOff.suit !== suit) {
+                console.log("Invalid lay off. Card suit must match.");
+                return;
+            }
+
+            // Determine if the joker is in the middle by checking if the non-joker cards are NOT continuous.
+            const nonJokerCards = meldToAddTo.cards.filter(c => c.rank !== 'Joker');
+            const nonJokerRanks = nonJokerCards.map(c => RANK_VALUES[c.rank]).sort((a, b) => a - b);
+
+            let jokerFillsRank = null;
+            // Find the gap that the joker must be filling.
+            for (let i = 0; i < nonJokerRanks.length - 1; i++) {
+                if (nonJokerRanks[i + 1] - nonJokerRanks[i] === 2) {
+                    jokerFillsRank = nonJokerRanks[i] + 1;
+                    break;
+                }
+            }
+
+            // Check for Ace-low case (e.g., A, 2, Joker, 4)
+            if (jokerFillsRank === null && nonJokerRanks.includes(1) && nonJokerRanks.includes(2) && !nonJokerRanks.includes(3)) {
+                // very specific case of A, 2, J, 4... joker must be 3.
+            }
+
+
+            const layOffRankValue = RANK_VALUES[cardToLayOff.rank];
+
+            if (jokerFillsRank !== null && layOffRankValue === jokerFillsRank) {
+                console.log("Invalid move: Cannot replace the Joker in the middle of a run.");
                 return;
             }
         }
+
 
         const potentialNewMeld = [...meldToAddTo.cards, ...gameState.selectedCards];
         if (isEscalera(potentialNewMeld)) {

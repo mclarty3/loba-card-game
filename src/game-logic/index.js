@@ -3,7 +3,7 @@ import { startGame, startNewRound } from './game.js';
 import { drawFromDeck, drawFromDiscard, meldSelectedCards, layOffCards, discardCard } from './actions.js';
 import { subscribe } from '../settings.js';
 import { runGameTurn } from './engine.js';
-import { sortHand } from './utils.js';
+import { sortHand } from './melds.js';
 
 // --- Game State ---
 let gameState;

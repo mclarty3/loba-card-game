@@ -1,7 +1,7 @@
 // Component for displaying the main game board
 import { createPlayerHandElement } from './PlayerHand.js';
 import { createCardElement } from './Card.js';
-import { isPierna, isEscalera } from '../game-logic/melds.js';
+import { isPierna, isEscalera, RANK_VALUES } from '../game-logic/melds.js';
 import { settings, setLanguage } from '../settings.js';
 
 export function createGameBoardElement(gameState, handlers) {
@@ -91,10 +91,37 @@ export function createGameBoardElement(gameState, handlers) {
         // Check if the selected cards can be laid off on this meld
         if (gameState.selectedCards.length > 0 && gameState.turnPhase !== 'draw') {
             if (meld.type === 'escalera') {
+                let isValidLayOff = false;
                 const potentialNewMeld = [...meld.cards, ...gameState.selectedCards];
                 if (isEscalera(potentialNewMeld)) {
+                    // It's a valid Escalera, but we also need to check the Joker replacement rule.
+                    isValidLayOff = true; // Assume it's valid unless proven otherwise
+                    const hasJoker = meld.cards.some(c => c.rank === 'Joker');
+                    const cardToLayOff = gameState.selectedCards[0];
+
+                    if (hasJoker && gameState.selectedCards.length === 1 && cardToLayOff.rank !== 'Joker') {
+                        const nonJokerCards = meld.cards.filter(c => c.rank !== 'Joker');
+                        const nonJokerRanks = nonJokerCards.map(c => RANK_VALUES[c.rank]).sort((a, b) => a - b);
+
+                        let jokerFillsRank = null;
+                        for (let i = 0; i < nonJokerRanks.length - 1; i++) {
+                            if (nonJokerRanks[i + 1] - nonJokerRanks[i] === 2) {
+                                jokerFillsRank = nonJokerRanks[i] + 1;
+                                break;
+                            }
+                        }
+
+                        const layOffRankValue = RANK_VALUES[cardToLayOff.rank];
+                        if (jokerFillsRank !== null && layOffRankValue === jokerFillsRank) {
+                            isValidLayOff = false; // It's an illegal replacement
+                        }
+                    }
+                }
+
+                if (isValidLayOff) {
                     meldContainer.classList.add('active-meld');
                 }
+
             } else if (meld.type === 'pierna') {
                 const selected = gameState.selectedCards;
                 // For a pierna lay-off, the card must match the rank and be one of the existing suits.

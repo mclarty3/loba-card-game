@@ -1,3 +1,37 @@
+import { RANKS } from './deck.js';
+
+const SUITS_ORDER = ['hearts', 'diams', 'clubs', 'spades', 'joker'];
+
+export function getRankValue(rank) {
+    const rankIndex = RANKS.indexOf(rank);
+    if (rankIndex !== -1) {
+        return rankIndex;
+    }
+    if (rank === 'Joker') {
+        return RANKS.length; // Jokers are highest
+    }
+    return -1; // Should not happen
+}
+
+function getSuitValue(suit) {
+    return SUITS_ORDER.indexOf(suit);
+}
+
+export function sortHand(hand) {
+    return [...hand].sort((a, b) => {
+        const rankValueA = getRankValue(a.rank);
+        const rankValueB = getRankValue(b.rank);
+
+        if (rankValueA !== rankValueB) {
+            return rankValueA - rankValueB;
+        }
+
+        const suitValueA = getSuitValue(a.suit);
+        const suitValueB = getSuitValue(b.suit);
+        return suitValueA - suitValueB;
+    });
+}
+
 /**
  * Validates if a set of cards constitutes a valid "Pierna".
  * A Pierna must:
@@ -19,7 +53,7 @@ export function isPierna(cards) {
     return suits.size === 3;
 }
 
-const RANK_VALUES = { 'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13 };
+export const RANK_VALUES = { 'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13 };
 
 /**
  * Validates if a set of cards constitutes a valid "Escalera".
