@@ -1,5 +1,5 @@
 // Component for displaying a player's hand
-import { createCardElement } from './Card.js';
+import { createCardElement, createCardBackElement } from './Card.js';
 import { settings } from '../settings.js';
 import { sortHand } from '../game-logic/melds.js';
 
@@ -70,23 +70,30 @@ export function createPlayerHandElement(player, onCardClick, selectedCards, game
     cardsContainer.classList.add('cards-container');
 
     let handToRender = [...player.hand];
-    if (player.autoSort) {
+    if (player.id === 'player1' && player.autoSort) {
         handToRender = sortHand(handToRender);
     }
 
     handToRender.forEach((card) => {
-        const cardElement = createCardElement(card);
-        cardElement.addEventListener('click', () => onCardClick(card));
+        let cardElement;
+        if (player.isAI) {
+            cardElement = createCardBackElement();
+        } else {
+            cardElement = createCardElement(card);
+            // The original index is not reliable if the hand is sorted.
+            // We'll rely on the card object itself for identification.
+            cardElement.addEventListener('click', () => onCardClick(card));
 
-        // Add 'selected' class if the card is in the selectedCards array
-        if (selectedCards.some(selectedCard => selectedCard.id === card.id)) {
-            cardElement.classList.add('selected');
-        }
+            // Add 'selected' class if the card is in the selectedCards array
+            if (selectedCards.some(selectedCard => selectedCard.id === card.id)) {
+                cardElement.classList.add('selected');
+            }
 
-        // Add 'newly-drawn' class if the card was just drawn
-        if (player.id === 'player1' && gameState.recentlyDrawnCard &&
-            gameState.recentlyDrawnCard.id === card.id) {
-            cardElement.classList.add('newly-drawn');
+            // Add 'newly-drawn' class if the card was just drawn
+            if (player.id === 'player1' && gameState.recentlyDrawnCard &&
+                gameState.recentlyDrawnCard.id === card.id) {
+                cardElement.classList.add('newly-drawn');
+            }
         }
 
         cardsContainer.appendChild(cardElement);

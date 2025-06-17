@@ -22,6 +22,12 @@ export function createCardElement(card) {
     return cardElement;
 }
 
+export function createCardBackElement() {
+    const cardElement = document.createElement('div');
+    cardElement.classList.add('card', 'card-back');
+    return cardElement;
+}
+
 function getSuitSymbol(suit) {
     switch (suit) {
         case 'hearts': return '&hearts;';

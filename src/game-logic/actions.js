@@ -69,7 +69,9 @@ export function drawFromDiscard(gameState) {
     const potentialMeld = [...gameState.selectedCards, topDiscard];
 
     let meldType = null;
-    if (isEscalera(potentialMeld)) {
+    if (isPierna(potentialMeld)) {
+        meldType = 'pierna';
+    } else if (isEscalera(potentialMeld)) {
         meldType = 'escalera';
     }
 
@@ -92,7 +94,7 @@ export function drawFromDiscard(gameState) {
         gameState.selectedCards = [];
         gameState.turnPhase = 'play';
     } else {
-        console.log("Invalid meld. Cannot take from discard pile to form a Pierna.");
+        console.log("Invalid meld. Cannot take from discard pile.");
     }
 }
 
