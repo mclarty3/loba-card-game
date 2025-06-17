@@ -71,8 +71,8 @@ export function createGameBoardElement(gameState, handlers) {
     gameState.players.forEach(player => {
         // Only allow card selection for the current player
         const isCurrentPlayer = player.id === gameState.currentPlayerId;
-        const handler = isCurrentPlayer ? handlers.onCardClick : () => { };
-        const playerHandElement = createPlayerHandElement(player, handler, gameState.selectedCards, gameState.gameMode);
+        const clickHandler = isCurrentPlayer ? handlers.onCardClick : () => { };
+        const playerHandElement = createPlayerHandElement(player, clickHandler, gameState.selectedCards, gameState.gameMode, handlers, gameState);
         if (isCurrentPlayer) {
             playerHandElement.classList.add('active-hand');
         }

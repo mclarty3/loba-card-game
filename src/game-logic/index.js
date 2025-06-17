@@ -3,6 +3,7 @@ import { startGame, startNewRound } from './game.js';
 import { drawFromDeck, drawFromDiscard, meldSelectedCards, layOffCards, discardCard } from './actions.js';
 import { subscribe } from '../settings.js';
 import { runGameTurn } from './engine.js';
+import { sortHand } from './utils.js';
 
 // --- Game State ---
 let gameState;
@@ -46,11 +47,25 @@ const actionHandlers = {
         renderGame();
     },
     onCardClick: (card) => {
-        const cardIndex = gameState.selectedCards.findIndex(c => c.suit === card.suit && c.rank === card.rank);
+        const cardIndex = gameState.selectedCards.findIndex(c => c.id === card.id);
         if (cardIndex > -1) {
             gameState.selectedCards.splice(cardIndex, 1);
         } else {
             gameState.selectedCards.push(card);
+        }
+        renderGame();
+    },
+    onSort: (playerId) => {
+        const player = gameState.players.find(p => p.id === playerId);
+        if (player) {
+            player.hand = sortHand(player.hand);
+        }
+        renderGame();
+    },
+    onToggleAutoSort: (playerId, isEnabled) => {
+        const player = gameState.players.find(p => p.id === playerId);
+        if (player) {
+            player.autoSort = isEnabled;
         }
         renderGame();
     },

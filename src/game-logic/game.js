@@ -15,12 +15,14 @@ export function startGame(numPlayers) {
 
     const players = [];
     for (let i = 1; i <= numPlayers; i++) {
+        const isAI = i !== 1; // Player 1 is human, others are AI
         players.push({
-            id: i,
+            id: `player${i}`,
             hand: [],
             score: 0,
             roundsWon: 0,
-            isAI: i === 2 // Player 2 is an AI
+            isAI: isAI,
+            autoSort: true
         });
     }
 
@@ -37,7 +39,7 @@ export function startGame(numPlayers) {
         players,
         deck,
         discardPile,
-        currentPlayerId: 1,
+        currentPlayerId: 'player1',
         // gameMode: 'puntos', // or 'loba'
         gameMode: 'loba', // or 'loba'
         gameSettings: {

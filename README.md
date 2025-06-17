@@ -12,6 +12,8 @@ This is pretty much entirely a vibe-coding project, using cursor and Gemini 2.5 
 - Include two distinct game modes:
     - **For Puntos:** The traditional scoring method where the player with the lowest score at the end of the game wins.
     - **For Loba:** A mode where the player who wins the most rounds is declared the winner.
+- Added the ability for the player to sort their hand in ascending order of card rank.
+- Added a checkbox that toggles whether the player's hand is automatically sorted when changes are made to the hand.
 
 ## Known Bug
 

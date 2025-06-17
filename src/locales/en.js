@@ -19,6 +19,8 @@ export const en = {
     next_round: 'Start Next Round',
     meld: 'Meld Selected Cards',
     discard: 'Discard Selected Card',
+    sort_hand: 'Sort Hand',
+    auto_sort: 'Auto-sort',
 
     // Piles
     deck: 'Deck',

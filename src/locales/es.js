@@ -19,6 +19,8 @@ export const es = {
     next_round: 'Siguiente Ronda',
     meld: 'Bajar Cartas Seleccionadas',
     discard: 'Descartar Carta Seleccionada',
+    sort_hand: 'Ordenar Mano',
+    auto_sort: 'Auto-ordenar',
 
     // Piles
     deck: 'Mazo',

@@ -11,6 +11,10 @@ export function drawFromDeck(gameState) {
         console.log("You have already drawn a card this turn.");
         return;
     }
+
+    // Clear any highlight from the previous turn
+    gameState.recentlyDrawnCard = null;
+
     const currentPlayer = gameState.players.find(p => p.id === gameState.currentPlayerId);
     if (!currentPlayer) return;
 
@@ -37,6 +41,8 @@ export function drawFromDeck(gameState) {
 
         currentPlayer.hand.push(drawnCard);
         gameState.turnPhase = 'play';
+        // Highlight the drawn card
+        gameState.recentlyDrawnCard = drawnCard;
     } else {
         console.warn("The deck is empty!");
     }
@@ -53,6 +59,8 @@ export function drawFromDiscard(gameState) {
         console.log("You have already drawn a card this turn.");
         return;
     }
+    // Clear any highlight from the previous turn
+    gameState.recentlyDrawnCard = null;
     const currentPlayer = gameState.players.find(p => p.id === gameState.currentPlayerId);
     if (!currentPlayer || gameState.discardPile.length === 0) return;
 
@@ -68,7 +76,8 @@ export function drawFromDiscard(gameState) {
 
     if (meldType) {
         // It's a valid meld. Form it on the table automatically.
-        gameState.discardPile.pop();
+        const drawnCard = gameState.discardPile.pop();
+        const potentialMeld = [...gameState.selectedCards, drawnCard];
 
         // Add the new meld to the table, sorting if it's an escalera
         const meldCards = meldType === 'escalera' ? sortEscalera(potentialMeld) : potentialMeld;
@@ -206,7 +215,7 @@ export function layOffCards(gameState, meldIndex) {
             const cardIndex = currentPlayer.hand.findIndex(c => c.rank === cardToLayOff.rank && c.suit === cardToLayOff.suit);
             if (cardIndex > -1) {
                 currentPlayer.hand.splice(cardIndex, 1);
-                gameState.discardPile.push(cardToLayOff);
+                meldToAddTo.cards.push(cardToLayOff);
                 gameState.selectedCards = [];
                 console.log(`Successful lay off to Pierna. Card moved to discard pile.`);
                 if (currentPlayer.hand.length === 0) endRound(gameState, currentPlayer);
@@ -282,8 +291,12 @@ export function discardCard(gameState) {
     if (currentPlayer.hand.length === 0) {
         endRound(gameState, currentPlayer);
     } else {
+        // Clear highlight when turn ends
+        gameState.recentlyDrawnCard = null;
         // Advance to the next player and reset the turn phase
-        gameState.currentPlayerId = (gameState.currentPlayerId % gameState.players.length) + 1;
+        const currentPlayerIndex = gameState.players.findIndex(p => p.id === gameState.currentPlayerId);
+        const nextPlayerIndex = (currentPlayerIndex + 1) % gameState.players.length;
+        gameState.currentPlayerId = gameState.players[nextPlayerIndex].id;
         gameState.turnPhase = 'draw';
         console.log(`Player ${currentPlayer.id} discarded. It's now Player ${gameState.currentPlayerId}'s turn.`);
     }
