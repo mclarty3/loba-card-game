@@ -43,12 +43,23 @@ export function sortHand(hand) {
  * @returns {boolean} - True if the cards form a valid Pierna, false otherwise.
  */
 export function isPierna(cards) {
-    if (cards.length < 3) return false;
-    if (cards.some(c => c.rank === 'Joker')) return false;
+    // A pierna melded from the hand must be exactly 3 cards.
+    if (cards.length !== 3) {
+        return false;
+    }
 
+    // No jokers allowed in a pierna.
+    if (cards.some(c => c.rank === 'Joker')) {
+        return false;
+    }
+
+    // All cards must have the same rank.
     const firstRank = cards[0].rank;
-    if (!cards.every(c => c.rank === firstRank)) return false;
+    if (!cards.every(c => c.rank === firstRank)) {
+        return false;
+    }
 
+    // The cards must be from exactly three different suits.
     const suits = new Set(cards.map(c => c.suit));
     return suits.size === 3;
 }

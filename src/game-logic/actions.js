@@ -234,13 +234,18 @@ export function layOffCards(gameState, meldIndex) {
 
         if (cardToLayOff.rank === piernaRank && piernaSuits.has(cardToLayOff.suit)) {
             // Card is valid. Move it from hand to discard pile.
-            const cardIndex = currentPlayer.hand.findIndex(c => c.rank === cardToLayOff.rank && c.suit === cardToLayOff.suit);
+            const cardIndex = currentPlayer.hand.findIndex(c => c.id === cardToLayOff.id);
             if (cardIndex > -1) {
                 currentPlayer.hand.splice(cardIndex, 1);
-                meldToAddTo.cards.push(cardToLayOff);
+                gameState.discardPile.push(cardToLayOff);
                 gameState.selectedCards = [];
-                console.log(`Successful lay off to Pierna. Card moved to discard pile.`);
-                if (currentPlayer.hand.length === 0) endRound(gameState, currentPlayer);
+                console.log(`Successful lay off to Pierna (Sopo). Card moved to discard pile.`);
+
+                // This action does NOT end the turn. The player must still discard.
+                // We only check if their hand is empty, which would end the round.
+                if (currentPlayer.hand.length === 0) {
+                    endRound(gameState, currentPlayer);
+                }
             }
         } else {
             console.log("Invalid lay off. Card must match the Pierna's rank and belong to one of its suits.");
