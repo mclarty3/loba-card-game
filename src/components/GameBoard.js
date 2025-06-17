@@ -167,7 +167,7 @@ export function createGameBoardElement(gameState, handlers) {
             const topDiscard = gameState.discardPile[gameState.discardPile.length - 1];
             const potentialMeld = [...selectedCards, topDiscard];
             // Only make it active if the selected cards + top discard form a valid meld
-            if (isPierna(potentialMeld) || isEscalera(potentialMeld)) {
+            if (isEscalera(potentialMeld)) {
                 discardPile.classList.add('active-pile');
             }
         }

@@ -8,7 +8,7 @@ const languages = {
     es: { name: 'Español', pack: es },
 };
 
-let currentLanguageCode = 'es';
+let currentLanguageCode = 'en';
 
 export function setLanguage(langCode) {
     if (languages[langCode]) {
